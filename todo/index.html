@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ Glass Todo App</title>
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-attachment: fixed;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ===== ANIMATED BACKGROUND BUBBLES ===== */
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            animation: floatBubbles 15s ease-in-out infinite alternate;
+            z-index: 0;
+        }
+
+        body::before {
+            width: 400px;
+            height: 400px;
+            background: #f093fb;
+            top: -100px;
+            right: -100px;
+            animation-delay: 0s;
+        }
+
+        body::after {
+            width: 500px;
+            height: 500px;
+            background: #4facfe;
+            bottom: -150px;
+            left: -150px;
+            animation-delay: -5s;
+        }
+
+        @keyframes floatBubbles {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                transform: translate(50px, 50px) scale(1.2);
+            }
+        }
+
+        /* ===== GLASSMORPHISM CONTAINER ===== */
+        .container {
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 35px;
+            max-width: 600px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .container:hover {
+            box-shadow: 
+                0 35px 60px rgba(0, 0, 0, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        }
+
+        /* ===== HEADER ===== */
+        h1 {
+            color: #fff;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            text-align: center;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        h1 span {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0 18px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        /* ===== INPUT AREA ===== */
+        .input-area {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        #taskInput {
+            flex: 1;
+            padding: 14px 22px;
+            border: none;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: #fff;
+            font-size: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        #taskInput::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 300;
+        }
+
+        #taskInput:focus {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.05);
+            transform: scale(1.02);
+        }
+
+        #addBtn {
+            padding: 14px 28px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 16px;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #addBtn:hover {
+            background: rgba(255, 255, 255, 0.35);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        #addBtn:active {
+            transform: scale(0.95);
+        }
+
+        /* ===== STATS BAR ===== */
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .stats span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stats .count-badge {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 2px 12px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+        }
+
+        #clearAllBtn {
+            background: rgba(255, 107, 107, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 107, 107, 0.2);
+            padding: 6px 18px;
+            border-radius: 50px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        #clearAllBtn:hover {
+            background: rgba(255, 107, 107, 0.35);
+            border-color: rgba(255, 107, 107, 0.4);
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.2);
+        }
+
+        /* ===== TODO LIST ===== */
+        #todoList {
+            list-style: none;
+            max-height: 450px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        /* Custom Scrollbar */
+        #todoList::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #todoList::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        #todoList::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 10px;
+        }
+
+        #todoList::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        /* ===== TASK ITEMS ===== */
+        .todo-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 20px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        .todo-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(8px) scale(1.01);
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Checkbox */
+        .todo-item input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            accent-color: #a78bfa;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .todo-item input[type="checkbox"]:hover {
+            transform: scale(1.1);
+        }
+
+        /* Task Text */
+        .todo-item .task-text {
+            flex: 1;
+            font-size: 1rem;
+            color: #fff;
+            word-break: break-word;
+            font-weight: 400;
+            text-shadow: 0 1px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        /* Completed Task */
+        .todo-item.completed .task-text {
+            text-decoration: line-through;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .todo-item.completed {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.03);
+        }
+
+        .todo-item.completed:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Delete Button */
+        .delete-btn {
+            background: rgba(255, 107, 107, 0.1);
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.4rem;
+            cursor: pointer;
+            padding: 0 8px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .delete-btn:hover {
+            background: rgba(255, 107, 107, 0.3);
+            color: #fff;
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-message {
+            text-align: center;
+            padding: 50px 20px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1.1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            border: 2px dashed rgba(255, 255, 255, 0.08);
+        }
+
+        .empty-message span {
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 5px 20px rgba(0, 0, 0, 0.1));
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            margin-top: 25px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 20px;
+            font-weight: 300;
+        }
+
+        .footer span {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+                border-radius: 20px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+                flex-wrap: wrap;
+            }
+
+            .input-area {
+                flex-direction: column;
+            }
+
+            #addBtn {
+                justify-content: center;
+            }
+
+            .stats {
+                flex-wrap: wrap;
+                gap: 10px;
+                justify-content: center;
+                font-size: 0.85rem;
+            }
+
+            .todo-item {
+                padding: 12px 14px;
+                font-size: 0.9rem;
+            }
+
+            .todo-item input[type="checkbox"] {
+                width: 20px;
+                height: 20px;
+            }
+        }
+
+        /* ===== ADDITIONAL GLASS EFFECTS ===== */
+        .glass-shine {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+            border-radius: 30px;
+        }
+
+        /* ===== RIPPLE ANIMATION FOR ADD BUTTON ===== */
+        @keyframes ripple {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.3);
+            }
+            100% {
+                box-shadow: 0 0 0 20px rgba(255, 255, 255, 0);
+            }
+        }
+
+        #addBtn:active {
+            animation: ripple 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Glass shine effect -->
+        <div class="glass-shine"></div>
+
+        <!-- Header -->
+        <h1>
+            ✨ Todo List
+            <span id="taskCounter">0</span>
+        </h1>
+
+        <!-- Input Area -->
+        <div class="input-area">
+            <input type="text" id="taskInput" placeholder="What's on your mind?">
+            <button id="addBtn">➕ Add</button>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats">
+            <span>📊 Total: <span class="count-badge" id="taskCount">0</span></span>
+            <span>⏳ Pending: <span class="count-badge" id="pendingCount">0</span></span>
+            <button id="clearAllBtn">🗑️ Clear All</button>
+        </div>
+
+        <!-- Todo List -->
+        <ul id="todoList">
+            <!-- Tasks will be added here dynamically -->
+        </ul>
+
+        <!-- Footer -->
+        <div class="footer">
+            <span>✦</span> click checkbox · delete · clear all <span>✦</span>
+        </div>
+    </div>
+
+    <script>
+        // ===== TODO APP LOGIC =====
+        console.log('✨ Glass Todo App starting...');
+
+        // DOM Elements
+        const todoList = document.getElementById('todoList');
+        const taskInput = document.getElementById('taskInput');
+        const addBtn = document.getElementById('addBtn');
+        const taskCount = document.getElementById('taskCount');
+        const pendingCount = document.getElementById('pendingCount');
+        const taskCounter = document.getElementById('taskCounter');
+        const clearAllBtn = document.getElementById('clearAllBtn');
+
+        // State
+        let tasks = [];
+
+        // Load tasks
+        function loadTasks() {
+            try {
+                const stored = localStorage.getItem('glassTasks');
+                if (stored) {
+                    tasks = JSON.parse(stored);
+                    console.log(`📦 Loaded ${tasks.length} tasks`);
+                }
+            } catch (e) {
+                console.error('Error loading tasks:', e);
+                tasks = [];
+            }
+        }
+
+        // Save tasks
+        function saveTasks() {
+            try {
+                localStorage.setItem('glassTasks', JSON.stringify(tasks));
+            } catch (e) {
+                console.error('Error saving tasks:', e);
+            }
+        }
+
+        // Render
+        function render() {
+            todoList.innerHTML = '';
+
+            const total = tasks.length;
+            const pending = tasks.filter(task => !task.completed).length;
+
+            taskCount.textContent = total;
+            pendingCount.textContent = pending;
+            taskCounter.textContent = total;
+
+            if (total === 0) {
+                todoList.innerHTML = `
+                    <div class="empty-message">
+                        <span>🌈</span>
+                        Your glass is empty<br>
+                        <small style="opacity:0.6;">Add a task to get started</small>
+                    </div>
+                `;
+                return;
+            }
+
+            tasks.forEach((task, index) => {
+                const li = document.createElement('li');
+                li.className = 'todo-item' + (task.completed ? ' completed' : '');
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = task.completed;
+                checkbox.addEventListener('change', () => toggleTask(index));
+
+                const span = document.createElement('span');
+                span.className = 'task-text';
+                span.textContent = task.text;
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.textContent = '✕';
+                deleteBtn.addEventListener('click', () => deleteTask(index));
+
+                li.appendChild(checkbox);
+                li.appendChild(span);
+                li.appendChild(deleteBtn);
+                todoList.appendChild(li);
+            });
+        }
+
+        // Add task
+        function addTask() {
+            const text = taskInput.value.trim();
+
+            if (text === '') {
+                taskInput.style.borderColor = 'rgba(255, 107, 107, 0.6)';
+                taskInput.placeholder = '⚠️ Please enter a task!';
+                setTimeout(() => {
+                    taskInput.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+                    taskInput.placeholder = "What's on your mind?";
+                }, 1500);
+                taskInput.focus();
+                return;
+            }
+
+            tasks.push({ text, completed: false });
+            taskInput.value = '';
+            taskInput.focus();
+
+            saveTasks();
+            render();
+
+            // Scroll to bottom to show new task
+            todoList.scrollTop = todoList.scrollHeight;
+        }
+
+        // Toggle task
+        function toggleTask(index) {
+            tasks[index].completed = !tasks[index].completed;
+            saveTasks();
+            render();
+        }
+
+        // Delete task
+        function deleteTask(index) {
+            tasks.splice(index, 1);
+            saveTasks();
+            render();
+        }
+
+        // Clear all
+        function clearAll() {
+            if (tasks.length === 0) return;
+
+            if (confirm('🧹 Clear all tasks?')) {
+                tasks = [];
+                saveTasks();
+                render();
+                taskInput.focus();
+            }
+        }
+
+        // Event listeners
+        addBtn.addEventListener('click', addTask);
+
+        taskInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addTask();
+            }
+        });
+
+        clearAllBtn.addEventListener('click', clearAll);
+
+        // Init
+        loadTasks();
+        render();
+        taskInput.focus();
+
+        console.log('✅ Glass Todo App ready!');
+    </script>
+
+</body>
+</html>
