@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>✨ Glass Todo App</title>
+    <title>📅 Smart Todo with Reminders</title>
     <style>
         /* ===== RESET & BASE ===== */
         * {
@@ -25,7 +25,7 @@
             overflow-x: hidden;
         }
 
-        /* ===== ANIMATED BACKGROUND BUBBLES ===== */
+        /* Animated Background */
         body::before,
         body::after {
             content: '';
@@ -64,95 +64,140 @@
             }
         }
 
-        /* ===== GLASSMORPHISM CONTAINER ===== */
+        /* ===== GLASS CONTAINER ===== */
         .container {
             position: relative;
             z-index: 1;
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.12);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-radius: 30px;
             padding: 35px;
-            max-width: 600px;
+            max-width: 700px;
             width: 100%;
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            box-shadow: 
-                0 25px 50px rgba(0, 0, 0, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.3);
-            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            max-height: 95vh;
+            overflow-y: auto;
         }
 
-        .container:hover {
-            box-shadow: 
-                0 35px 60px rgba(0, 0, 0, 0.25),
-                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        /* Custom Scrollbar for Container */
+        .container::-webkit-scrollbar {
+            width: 6px;
+        }
+        .container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        .container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 10px;
         }
 
         /* ===== HEADER ===== */
         h1 {
             color: #fff;
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             font-weight: 700;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             text-align: center;
             text-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
-            letter-spacing: -0.5px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 12px;
+            flex-wrap: wrap;
         }
 
         h1 span {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.15);
             padding: 0 18px;
             border-radius: 50px;
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 500;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         /* ===== INPUT AREA ===== */
         .input-area {
             display: flex;
-            gap: 12px;
-            margin-bottom: 25px;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .input-group {
+            flex: 1;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            min-width: 200px;
         }
 
         #taskInput {
-            flex: 1;
-            padding: 14px 22px;
+            flex: 2;
+            padding: 14px 20px;
             border: none;
             border-radius: 16px;
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.12);
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
             color: #fff;
             font-size: 1rem;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.3s ease;
             outline: none;
+            min-width: 150px;
         }
 
         #taskInput::placeholder {
-            color: rgba(255, 255, 255, 0.6);
-            font-weight: 300;
+            color: rgba(255, 255, 255, 0.5);
         }
 
         #taskInput:focus {
-            background: rgba(255, 255, 255, 0.25);
-            border-color: rgba(255, 255, 255, 0.4);
-            box-shadow: 0 0 30px rgba(255, 255, 255, 0.05);
-            transform: scale(1.02);
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .datetime-group {
+            display: flex;
+            gap: 8px;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        #taskDate, #taskTime {
+            padding: 14px 16px;
+            border: none;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            outline: none;
+            flex: 1;
+            min-width: 0;
+            cursor: pointer;
+        }
+
+        #taskDate::-webkit-calendar-picker-indicator,
+        #taskTime::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+
+        #taskDate:focus, #taskTime:focus {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
         }
 
         #addBtn {
             padding: 14px 28px;
             background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 16px;
             color: #fff;
             font-size: 1rem;
@@ -160,115 +205,126 @@
             cursor: pointer;
             transition: all 0.3s ease;
             white-space: nowrap;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         #addBtn:hover {
             background: rgba(255, 255, 255, 0.35);
-            transform: translateY(-2px) scale(1.02);
+            transform: translateY(-2px);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            border-color: rgba(255, 255, 255, 0.4);
         }
 
-        #addBtn:active {
-            transform: scale(0.95);
+        /* ===== FILTERS ===== */
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
         }
 
-        /* ===== STATS BAR ===== */
+        .filter-btn {
+            padding: 8px 18px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 50px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+        }
+
+        .filter-btn.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* ===== STATS ===== */
         .stats {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 12px 20px;
-            margin-bottom: 20px;
-            background: rgba(255, 255, 255, 0.08);
+            margin-bottom: 18px;
+            background: rgba(255, 255, 255, 0.06);
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
             border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: rgba(255, 255, 255, 0.9);
-            font-weight: 500;
-            font-size: 0.95rem;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.9rem;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
-        .stats span {
+        .stats .stat-item {
             display: flex;
             align-items: center;
             gap: 6px;
         }
 
         .stats .count-badge {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.12);
             padding: 2px 12px;
             border-radius: 50px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
 
         #clearAllBtn {
-            background: rgba(255, 107, 107, 0.2);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 107, 107, 0.2);
+            background: rgba(255, 107, 107, 0.15);
+            border: 1px solid rgba(255, 107, 107, 0.15);
             padding: 6px 18px;
             border-radius: 50px;
             color: #fff;
             cursor: pointer;
             font-size: 0.85rem;
-            font-weight: 500;
             transition: all 0.3s ease;
         }
 
         #clearAllBtn:hover {
-            background: rgba(255, 107, 107, 0.35);
-            border-color: rgba(255, 107, 107, 0.4);
-            transform: scale(1.05);
-            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.2);
+            background: rgba(255, 107, 107, 0.3);
+            border-color: rgba(255, 107, 107, 0.3);
         }
 
         /* ===== TODO LIST ===== */
         #todoList {
             list-style: none;
-            max-height: 450px;
+            max-height: 400px;
             overflow-y: auto;
             padding-right: 5px;
         }
 
-        /* Custom Scrollbar */
         #todoList::-webkit-scrollbar {
-            width: 6px;
+            width: 5px;
         }
-
         #todoList::-webkit-scrollbar-track {
             background: rgba(255, 255, 255, 0.05);
             border-radius: 10px;
         }
-
         #todoList::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 10px;
-        }
-
-        #todoList::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.4);
         }
 
         /* ===== TASK ITEMS ===== */
         .todo-item {
             display: flex;
             align-items: center;
-            gap: 14px;
-            padding: 14px 20px;
+            gap: 12px;
+            padding: 14px 18px;
             margin-bottom: 10px;
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.06);
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
             border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
             animation: slideIn 0.3s ease-out;
+            flex-wrap: wrap;
         }
 
         @keyframes slideIn {
@@ -283,232 +339,286 @@
         }
 
         .todo-item:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateX(8px) scale(1.01);
-            border-color: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.1);
         }
 
-        /* Checkbox */
         .todo-item input[type="checkbox"] {
-            width: 22px;
-            height: 22px;
+            width: 20px;
+            height: 20px;
             cursor: pointer;
             accent-color: #a78bfa;
-            border-radius: 50%;
-            transition: all 0.3s ease;
             flex-shrink: 0;
         }
 
-        .todo-item input[type="checkbox"]:hover {
-            transform: scale(1.1);
+        .todo-item .task-info {
+            flex: 1;
+            min-width: 150px;
         }
 
-        /* Task Text */
         .todo-item .task-text {
-            flex: 1;
             font-size: 1rem;
             color: #fff;
             word-break: break-word;
-            font-weight: 400;
-            text-shadow: 0 1px 10px rgba(0, 0, 0, 0.05);
+            display: block;
+        }
+
+        .todo-item .task-meta {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 4px;
+            flex-wrap: wrap;
+        }
+
+        .todo-item .task-meta .due-date {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .todo-item .task-meta .reminder-badge {
+            background: rgba(255, 200, 0, 0.15);
+            color: #ffd700;
+            padding: 2px 12px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            border: 1px solid rgba(255, 200, 0, 0.1);
+        }
+
+        .todo-item .task-meta .overdue {
+            color: #ff6b6b;
+            font-weight: 500;
+        }
+
+        .todo-item.completed .task-text {
+            text-decoration: line-through;
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        .todo-item.completed .task-meta {
+            opacity: 0.4;
+        }
+
+        /* Reminder/Delete Buttons */
+        .task-actions {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .reminder-btn {
+            background: rgba(255, 200, 0, 0.1);
+            border: 1px solid rgba(255, 200, 0, 0.1);
+            color: #ffd700;
+            padding: 6px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.8rem;
             transition: all 0.3s ease;
         }
 
-        /* Completed Task */
-        .todo-item.completed .task-text {
-            text-decoration: line-through;
-            color: rgba(255, 255, 255, 0.4);
+        .reminder-btn:hover {
+            background: rgba(255, 200, 0, 0.2);
+            transform: scale(1.05);
         }
 
-        .todo-item.completed {
-            background: rgba(255, 255, 255, 0.03);
-            border-color: rgba(255, 255, 255, 0.03);
+        .reminder-btn.active {
+            background: rgba(255, 200, 0, 0.25);
+            border-color: rgba(255, 200, 0, 0.3);
         }
 
-        .todo-item.completed:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        /* Delete Button */
         .delete-btn {
             background: rgba(255, 107, 107, 0.1);
             border: none;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 1.4rem;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1.2rem;
             cursor: pointer;
-            padding: 0 8px;
+            padding: 0 10px;
             border-radius: 12px;
             transition: all 0.3s ease;
-            width: 36px;
             height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
         }
 
         .delete-btn:hover {
-            background: rgba(255, 107, 107, 0.3);
+            background: rgba(255, 107, 107, 0.25);
             color: #fff;
-            transform: rotate(90deg) scale(1.1);
+            transform: rotate(90deg);
         }
 
         /* ===== EMPTY STATE ===== */
         .empty-message {
             text-align: center;
             padding: 50px 20px;
-            color: rgba(255, 255, 255, 0.5);
+            color: rgba(255, 255, 255, 0.4);
             font-size: 1.1rem;
             background: rgba(255, 255, 255, 0.03);
             border-radius: 20px;
-            border: 2px dashed rgba(255, 255, 255, 0.08);
+            border: 2px dashed rgba(255, 255, 255, 0.06);
         }
 
         .empty-message span {
-            font-size: 4rem;
+            font-size: 3.5rem;
             display: block;
             margin-bottom: 15px;
-            filter: drop-shadow(0 5px 20px rgba(0, 0, 0, 0.1));
         }
 
         /* ===== FOOTER ===== */
         .footer {
-            margin-top: 25px;
+            margin-top: 20px;
             text-align: center;
-            color: rgba(255, 255, 255, 0.3);
-            font-size: 0.75rem;
-            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 0.7rem;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
-            padding-top: 20px;
-            font-weight: 300;
+            padding-top: 18px;
         }
 
-        .footer span {
-            color: rgba(255, 255, 255, 0.5);
+        /* ===== NOTIFICATION TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            color: #fff;
+            padding: 16px 30px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transition: all 0.5s ease;
+            z-index: 1000;
+            font-size: 0.95rem;
+            max-width: 90%;
+            text-align: center;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
         }
 
         /* ===== RESPONSIVE ===== */
-        @media (max-width: 480px) {
+        @media (max-width: 600px) {
             .container {
                 padding: 20px;
-                border-radius: 20px;
             }
-
             h1 {
-                font-size: 1.8rem;
-                flex-wrap: wrap;
+                font-size: 1.6rem;
             }
-
             .input-area {
                 flex-direction: column;
             }
-
-            #addBtn {
-                justify-content: center;
+            .datetime-group {
+                flex-direction: column;
             }
-
-            .stats {
-                flex-wrap: wrap;
-                gap: 10px;
-                justify-content: center;
-                font-size: 0.85rem;
+            #taskDate, #taskTime {
+                width: 100%;
             }
-
             .todo-item {
-                padding: 12px 14px;
-                font-size: 0.9rem;
+                flex-direction: column;
+                align-items: stretch;
             }
-
-            .todo-item input[type="checkbox"] {
-                width: 20px;
-                height: 20px;
+            .task-actions {
+                justify-content: flex-end;
             }
-        }
-
-        /* ===== ADDITIONAL GLASS EFFECTS ===== */
-        .glass-shine {
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-            pointer-events: none;
-            border-radius: 30px;
-        }
-
-        /* ===== RIPPLE ANIMATION FOR ADD BUTTON ===== */
-        @keyframes ripple {
-            0% {
-                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.3);
+            .stats {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
             }
-            100% {
-                box-shadow: 0 0 0 20px rgba(255, 255, 255, 0);
+            .filters {
+                justify-content: center;
             }
-        }
-
-        #addBtn:active {
-            animation: ripple 0.6s ease-out;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <!-- Glass shine effect -->
-        <div class="glass-shine"></div>
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
 
-        <!-- Header -->
+    <div class="container">
         <h1>
-            ✨ Todo List
+            📅 Smart Todo
             <span id="taskCounter">0</span>
         </h1>
 
         <!-- Input Area -->
         <div class="input-area">
-            <input type="text" id="taskInput" placeholder="What's on your mind?">
+            <div class="input-group">
+                <input type="text" id="taskInput" placeholder="What do you need to do?">
+            </div>
+            <div class="datetime-group">
+                <input type="date" id="taskDate">
+                <input type="time" id="taskTime">
+            </div>
             <button id="addBtn">➕ Add</button>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">📋 All</button>
+            <button class="filter-btn" data-filter="pending">⏳ Pending</button>
+            <button class="filter-btn" data-filter="completed">✅ Done</button>
+            <button class="filter-btn" data-filter="today">📆 Today</button>
+            <button class="filter-btn" data-filter="overdue">⚠️ Overdue</button>
         </div>
 
         <!-- Stats -->
         <div class="stats">
-            <span>📊 Total: <span class="count-badge" id="taskCount">0</span></span>
-            <span>⏳ Pending: <span class="count-badge" id="pendingCount">0</span></span>
+            <span class="stat-item">📊 Total: <span class="count-badge" id="taskCount">0</span></span>
+            <span class="stat-item">⏳ Pending: <span class="count-badge" id="pendingCount">0</span></span>
+            <span class="stat-item">🔔 Reminders: <span class="count-badge" id="reminderCount">0</span></span>
             <button id="clearAllBtn">🗑️ Clear All</button>
         </div>
 
         <!-- Todo List -->
         <ul id="todoList">
-            <!-- Tasks will be added here dynamically -->
+            <!-- Dynamic tasks will be rendered here -->
         </ul>
 
-        <!-- Footer -->
         <div class="footer">
-            <span>✦</span> click checkbox · delete · clear all <span>✦</span>
+            ✦ click checkbox · set reminders · filter tasks ✦
         </div>
     </div>
 
     <script>
-        // ===== TODO APP LOGIC =====
-        console.log('✨ Glass Todo App starting...');
+        // ===== SMART TODO APP WITH REMINDERS =====
+        console.log('📅 Smart Todo App with Reminders starting...');
 
-        // DOM Elements
+        // ===== DOM Elements =====
         const todoList = document.getElementById('todoList');
         const taskInput = document.getElementById('taskInput');
+        const taskDate = document.getElementById('taskDate');
+        const taskTime = document.getElementById('taskTime');
         const addBtn = document.getElementById('addBtn');
         const taskCount = document.getElementById('taskCount');
         const pendingCount = document.getElementById('pendingCount');
+        const reminderCount = document.getElementById('reminderCount');
         const taskCounter = document.getElementById('taskCounter');
         const clearAllBtn = document.getElementById('clearAllBtn');
+        const toast = document.getElementById('toast');
+        const filterBtns = document.querySelectorAll('.filter-btn');
 
-        // State
+        // ===== State =====
         let tasks = [];
+        let currentFilter = 'all';
+        let toastTimeout = null;
 
-        // Load tasks
+        // ===== Load Tasks =====
         function loadTasks() {
             try {
-                const stored = localStorage.getItem('glassTasks');
+                const stored = localStorage.getItem('smartTasks');
                 if (stored) {
                     tasks = JSON.parse(stored);
                     console.log(`📦 Loaded ${tasks.length} tasks`);
@@ -517,117 +627,332 @@
                 console.error('Error loading tasks:', e);
                 tasks = [];
             }
+            // Check for overdue tasks on load
+            checkOverdueTasks();
         }
 
-        // Save tasks
+        // ===== Save Tasks =====
         function saveTasks() {
             try {
-                localStorage.setItem('glassTasks', JSON.stringify(tasks));
+                localStorage.setItem('smartTasks', JSON.stringify(tasks));
             } catch (e) {
                 console.error('Error saving tasks:', e);
             }
         }
 
-        // Render
+        // ===== Check Overdue Tasks =====
+        function checkOverdueTasks() {
+            const now = new Date();
+            let overdueCount = 0;
+            tasks.forEach(task => {
+                if (!task.completed && task.dueDate) {
+                    const due = new Date(task.dueDate);
+                    if (due < now) {
+                        task.overdue = true;
+                        overdueCount++;
+                    } else {
+                        task.overdue = false;
+                    }
+                }
+            });
+            return overdueCount;
+        }
+
+        // ===== Show Toast Notification =====
+        function showToast(message, duration = 3000) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+
+        // ===== Request Browser Notification Permission =====
+        function requestNotificationPermission() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+        }
+
+        // ===== Send Browser Notification =====
+        function sendNotification(task) {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification('⏰ Task Reminder', {
+                    body: `"${task.text}" is due ${task.dueDate ? 'on ' + new Date(task.dueDate).toLocaleString() : 'soon!'}`,
+                    icon: '📅'
+                });
+            }
+            showToast(`🔔 Reminder: "${task.text}" is due soon!`);
+        }
+
+        // ===== Check Reminders =====
+        function checkReminders() {
+            const now = new Date();
+            tasks.forEach(task => {
+                if (!task.completed && task.reminder && task.dueDate) {
+                    const due = new Date(task.dueDate);
+                    const timeDiff = due - now;
+                    // Remind if within 1 hour of due time and not reminded yet
+                    if (timeDiff > 0 && timeDiff < 3600000 && !task.reminded) {
+                        sendNotification(task);
+                        task.reminded = true;
+                        saveTasks();
+                    }
+                }
+            });
+        }
+
+        // ===== Render Tasks =====
         function render() {
             todoList.innerHTML = '';
 
+            // Check overdue
+            checkOverdueTasks();
+
+            // Filter tasks
+            let filteredTasks = tasks;
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+            switch (currentFilter) {
+                case 'pending':
+                    filteredTasks = tasks.filter(t => !t.completed);
+                    break;
+                case 'completed':
+                    filteredTasks = tasks.filter(t => t.completed);
+                    break;
+                case 'today':
+                    filteredTasks = tasks.filter(t => {
+                        if (!t.dueDate) return false;
+                        const due = new Date(t.dueDate);
+                        return due >= today && due < new Date(today.getTime() + 86400000);
+                    });
+                    break;
+                case 'overdue':
+                    filteredTasks = tasks.filter(t => t.overdue && !t.completed);
+                    break;
+                default:
+                    filteredTasks = tasks;
+            }
+
+            // Update counters
             const total = tasks.length;
-            const pending = tasks.filter(task => !task.completed).length;
+            const pending = tasks.filter(t => !t.completed).length;
+            const reminders = tasks.filter(t => t.reminder && !t.completed).length;
 
             taskCount.textContent = total;
             pendingCount.textContent = pending;
+            reminderCount.textContent = reminders;
             taskCounter.textContent = total;
 
-            if (total === 0) {
+            // Empty state
+            if (filteredTasks.length === 0) {
+                const emptyMsg = currentFilter === 'all' ? 'No tasks yet. Add one above!' :
+                    currentFilter === 'today' ? 'No tasks for today' :
+                    currentFilter === 'overdue' ? 'No overdue tasks 🎉' :
+                    `No ${currentFilter} tasks`;
                 todoList.innerHTML = `
                     <div class="empty-message">
-                        <span>🌈</span>
-                        Your glass is empty<br>
-                        <small style="opacity:0.6;">Add a task to get started</small>
+                        <span>📭</span>
+                        ${emptyMsg}
                     </div>
                 `;
                 return;
             }
 
-            tasks.forEach((task, index) => {
+            // Render tasks
+            filteredTasks.forEach((task, originalIndex) => {
+                // Find actual index in tasks array
+                const index = tasks.indexOf(task);
+                
                 const li = document.createElement('li');
-                li.className = 'todo-item' + (task.completed ? ' completed' : '');
+                li.className = 'todo-item' + (task.completed ? ' completed' : '') + (task.overdue ? ' overdue' : '');
 
+                // Checkbox
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
                 checkbox.checked = task.completed;
                 checkbox.addEventListener('change', () => toggleTask(index));
 
-                const span = document.createElement('span');
-                span.className = 'task-text';
-                span.textContent = task.text;
+                // Task info container
+                const infoDiv = document.createElement('div');
+                infoDiv.className = 'task-info';
 
+                // Task text
+                const textSpan = document.createElement('span');
+                textSpan.className = 'task-text';
+                textSpan.textContent = task.text;
+
+                // Task meta (date & reminder)
+                const metaDiv = document.createElement('div');
+                metaDiv.className = 'task-meta';
+
+                if (task.dueDate) {
+                    const dueSpan = document.createElement('span');
+                    dueSpan.className = 'due-date';
+                    const dueDate = new Date(task.dueDate);
+                    const isOverdue = task.overdue && !task.completed;
+                    dueSpan.innerHTML = `📅 ${dueDate.toLocaleString()}`;
+                    if (isOverdue) {
+                        dueSpan.innerHTML += ' <span class="overdue">⚠️ Overdue</span>';
+                    }
+                    metaDiv.appendChild(dueSpan);
+                }
+
+                if (task.reminder) {
+                    const reminderSpan = document.createElement('span');
+                    reminderSpan.className = 'reminder-badge';
+                    reminderSpan.textContent = '🔔 Reminder set';
+                    metaDiv.appendChild(reminderSpan);
+                }
+
+                infoDiv.appendChild(textSpan);
+                infoDiv.appendChild(metaDiv);
+
+                // Actions container
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'task-actions';
+
+                // Reminder toggle button
+                const reminderBtn = document.createElement('button');
+                reminderBtn.className = 'reminder-btn' + (task.reminder ? ' active' : '');
+                reminderBtn.textContent = task.reminder ? '🔔 On' : '🔕 Off';
+                reminderBtn.title = 'Toggle reminder';
+                reminderBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleReminder(index);
+                });
+
+                // Delete button
                 const deleteBtn = document.createElement('button');
                 deleteBtn.className = 'delete-btn';
                 deleteBtn.textContent = '✕';
                 deleteBtn.addEventListener('click', () => deleteTask(index));
 
+                actionsDiv.appendChild(reminderBtn);
+                actionsDiv.appendChild(deleteBtn);
+
                 li.appendChild(checkbox);
-                li.appendChild(span);
-                li.appendChild(deleteBtn);
+                li.appendChild(infoDiv);
+                li.appendChild(actionsDiv);
                 todoList.appendChild(li);
             });
+
+            // Check reminders periodically
+            checkReminders();
         }
 
-        // Add task
+        // ===== Add Task =====
         function addTask() {
             const text = taskInput.value.trim();
-
+            
             if (text === '') {
-                taskInput.style.borderColor = 'rgba(255, 107, 107, 0.6)';
+                taskInput.style.borderColor = 'rgba(255,107,107,0.6)';
                 taskInput.placeholder = '⚠️ Please enter a task!';
                 setTimeout(() => {
-                    taskInput.style.borderColor = 'rgba(255, 255, 255, 0.15)';
-                    taskInput.placeholder = "What's on your mind?";
+                    taskInput.style.borderColor = 'rgba(255,255,255,0.1)';
+                    taskInput.placeholder = 'What do you need to do?';
                 }, 1500);
                 taskInput.focus();
                 return;
             }
 
-            tasks.push({ text, completed: false });
+            let dueDate = null;
+            let reminder = false;
+
+            // Build date
+            if (taskDate.value) {
+                let dateStr = taskDate.value;
+                if (taskTime.value) {
+                    dateStr += `T${taskTime.value}`;
+                }
+                dueDate = new Date(dateStr).toISOString();
+            }
+
+            tasks.push({
+                text: text,
+                completed: false,
+                dueDate: dueDate,
+                reminder: reminder,
+                reminded: false,
+                overdue: false,
+                createdAt: new Date().toISOString()
+            });
+
             taskInput.value = '';
+            taskDate.value = '';
+            taskTime.value = '';
             taskInput.focus();
 
             saveTasks();
             render();
-
-            // Scroll to bottom to show new task
-            todoList.scrollTop = todoList.scrollHeight;
+            showToast('✅ Task added successfully!');
         }
 
-        // Toggle task
+        // ===== Toggle Task =====
         function toggleTask(index) {
             tasks[index].completed = !tasks[index].completed;
+            if (tasks[index].completed) {
+                tasks[index].reminded = true; // Stop reminders for completed tasks
+            }
+            saveTasks();
+            render();
+            showToast(tasks[index].completed ? '✅ Task completed!' : '🔄 Task reopened');
+        }
+
+        // ===== Toggle Reminder =====
+        function toggleReminder(index) {
+            tasks[index].reminder = !tasks[index].reminder;
+            if (tasks[index].reminder && !tasks[index].dueDate) {
+                showToast('⚠️ Please set a due date for reminder!', 2000);
+                tasks[index].reminder = false;
+                saveTasks();
+                render();
+                return;
+            }
+            if (tasks[index].reminder) {
+                tasks[index].reminded = false;
+                showToast(`🔔 Reminder set for "${tasks[index].text}"`);
+                // Request notification permission if not granted
+                requestNotificationPermission();
+            } else {
+                showToast(`🔕 Reminder removed for "${tasks[index].text}"`);
+            }
             saveTasks();
             render();
         }
 
-        // Delete task
+        // ===== Delete Task =====
         function deleteTask(index) {
+            const taskText = tasks[index].text;
             tasks.splice(index, 1);
             saveTasks();
             render();
+            showToast(`🗑️ "${taskText}" deleted`);
         }
 
-        // Clear all
+        // ===== Clear All =====
         function clearAll() {
             if (tasks.length === 0) return;
-
-            if (confirm('🧹 Clear all tasks?')) {
+            if (confirm('🧹 Delete all tasks?')) {
                 tasks = [];
                 saveTasks();
                 render();
-                taskInput.focus();
+                showToast('🗑️ All tasks cleared');
             }
         }
 
-        // Event listeners
+        // ===== Filter Change =====
+        function setFilter(filter) {
+            currentFilter = filter;
+            filterBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.filter === filter);
+            });
+            render();
+        }
+
+        // ===== Event Listeners =====
         addBtn.addEventListener('click', addTask);
 
         taskInput.addEventListener('keydown', (e) => {
@@ -639,12 +964,38 @@
 
         clearAllBtn.addEventListener('click', clearAll);
 
-        // Init
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                setFilter(btn.dataset.filter);
+            });
+        });
+
+        // ===== Set default date to today =====
+        function setDefaultDate() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            taskDate.value = `${year}-${month}-${day}`;
+        }
+        setDefaultDate();
+
+        // ===== Initialize =====
         loadTasks();
         render();
         taskInput.focus();
 
-        console.log('✅ Glass Todo App ready!');
+        // Check reminders every 30 seconds
+        setInterval(() => {
+            checkReminders();
+            render(); // Re-render to update overdue status
+        }, 30000);
+
+        // Request notification permission on load
+        setTimeout(requestNotificationPermission, 2000);
+
+        console.log('✅ Smart Todo App ready!');
+        console.log(`📊 ${tasks.length} tasks loaded.`);
     </script>
 
 </body>
